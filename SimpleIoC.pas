@@ -1,6 +1,6 @@
 {***************************************************************************}
 {                                                                           }
-{           Simple.IoC                                                    }
+{           Simple.IoC                                                      }
 {                                                                           }
 {           Copyright (C) 2013 Vincent Parrett                              }
 {                                                                           }
@@ -48,23 +48,27 @@ type
   TSimpleIoC = class
   private
     FRaiseIfNotFound : boolean;
-    FContainerInfo : TDictionary<string,TObject>;
+    FContainerInfo   : TDictionary<string,TObject>;
     type
       TIoCRegistration<T : IInterface> = class
-      IInterface        : PTypeInfo;
-      ImplClass         : TClass;
-      ActivatorDelegate : TActivatorDelegate<T>;
-      IsSingleton       : boolean;
-      Instance          : IInterface;
+        IInterface        : PTypeInfo;
+        ImplClass         : TClass;
+        ActivatorDelegate : TActivatorDelegate<T>;
+        IsSingleton       : boolean;
+        Instance          : IInterface;
     end;
 
   private
     class var FDefault : TSimpleIoC;
     class destructor ClassDestroy;
   protected
-    function GetInterfaceKey<TInterface>(const AName: string = ''): string;
-    function InternalResolve<TInterface: IInterface>(out AInterface: TInterface; const AName: string = ''): TResolveResult;
-    procedure InternalRegisterType<TInterface : IInterface>(const singleton : boolean; const AImplementation : TClass; const delegate : TActivatorDelegate<TInterface>; const name : string = '');
+    function  GetInterfaceKey      < TInterface>               ( const AName           : string = '' ) : string;
+    function  InternalResolve      < TInterface : IInterface > ( out   AInterface      : TInterface; 
+                                                                 const AName           : string = '' ) : TResolveResult;
+    procedure InternalRegisterType < TInterface : IInterface > ( const singleton       : boolean;    
+                                                                 const AImplementation : TClass; 
+                                                                 const delegate        : TActivatorDelegate<TInterface>; 
+                                                                 const name            : string = '' );
   public
     constructor Create;
     destructor Destroy;override;
@@ -213,7 +217,7 @@ begin
   else
   begin
     rego := TIoCRegistration<TInterface>(o);
-    //cannot replace a singleton that has already been instanciated.
+    //cannot replace a singleton that has already been instantiated.
     if rego.IsSingleton and (rego.Instance <> nil)  then
       raise EIoCException.Create(Format('An implementation for type %s with name %s is already registered with IoC',[pInfo.Name, newName]));
     rego.IInterface := pInfo;
